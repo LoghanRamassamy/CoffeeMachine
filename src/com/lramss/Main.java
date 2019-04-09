@@ -13,5 +13,7 @@ public class Main {
         list.add(new Commande("Ch",5,2.0));
 
         new Commande().printAllCommande(list);
+
+        new Commande().notifyMissingDrink("Dingo");
     }
 }

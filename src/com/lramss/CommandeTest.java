@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.*;
 
 public class CommandeTest {
 
@@ -66,4 +66,15 @@ public class CommandeTest {
 
         assertEquals(new Commande().getTotalCommandeSold(list), 2.1);
     }
+
+    @Test
+    public void isEmptyDrink() {
+        assertTrue(new Commande().isEmpty("The HOT Coffee !"));
+    }
+
+    @Test
+    public void isNotEmptyDrink() {
+        assertFalse(new Commande().isEmpty("Tea"));
+    }
+
 }

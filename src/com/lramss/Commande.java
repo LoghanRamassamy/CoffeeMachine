@@ -1,11 +1,13 @@
 package com.lramss;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Commande {
+public class Commande implements EmailNotifier, BeverageQuantityChecker{
     private String drinkType;
     private int nbSugar;
     private int stick;
@@ -79,10 +81,10 @@ public class Commande {
 
     public String toStringForCustomer() {
         String msg;
-        if (UNKNOWN_DRINK.equals(getDrinkLibelle()))
-            msg = "Drink maker will don't makes your drink. (" + UNKNOWN_DRINK + ")";
-        else
+        if (drinks.containsKey(drinkType))
             msg = "Drink maker makes 1 " + getDrinkLibelle() + " with " + nbSugar + " sugar and " + stick + " stick.";
+        else
+            msg = "Drink maker will don't makes your drink. (" + UNKNOWN_DRINK + ")";
         return msg;
     }
 
@@ -91,10 +93,7 @@ public class Commande {
     }
 
     public boolean isValideCommande(){
-        boolean bool = true;
-            if (this.getDrinkLibelle().equals(UNKNOWN_DRINK) || this.getDrinkPrice() > this.money)
-                bool = false;
-        return bool;
+        return drinks.containsKey(drinkType) && getDrinkPrice() <= money;
     }
 
     String sendCommandeToDrinkMaker() {
@@ -102,7 +101,7 @@ public class Commande {
         double enoughMoney = checkMoney();
         String msgMoney;
         if (enoughMoney < 0)
-            msgMoney = df.format(this.getDrinkPrice() - this.money) + "€ is missing.";
+            msgMoney = df.format(getDrinkPrice() - money) + "€ is missing.";
         else
             msgMoney = enoughMoney + "€ on extra.";
         return drinkType + ":" + nbSugar + ":" + stick + ": " + msgMoney;
@@ -111,13 +110,13 @@ public class Commande {
     @Override
     public String toString() {
         return "Commande {" +
-                "Drink = '" + this.getDrinkLibelle() + '\'' +
+                "Drink = '" + getDrinkLibelle() + '\'' +
                 ", Amount of sugar = " + nbSugar +
-                ", Price of drink = " + this.getDrinkPrice() +
+                ", Price of drink = " + getDrinkPrice() +
                 "€}";
     }
 
-    public double getTotalCommandeSold(List<Commande> list){
+    public double getTotalCommandeSold(@NotNull List<Commande> list){
         double total = 0.0;
         for (Commande cmd : list) {
             if(cmd.isValideCommande())
@@ -126,15 +125,25 @@ public class Commande {
         return total;
     }
 
-    public void printAllValideCommande(List<Commande> list){
+    public void printAllValideCommande(@NotNull List<Commande> list){
         for (Commande cmd : list) {
             if(cmd.isValideCommande())
                 System.out.println(cmd.toString());
         }
     }
 
-    public void printAllCommande(List<Commande> list){
+    public void printAllCommande(@NotNull List<Commande> list){
         for (Commande cmd : list)
             System.out.println(cmd.toString() + ", Valid order => " + cmd.isValideCommande());
+    }
+
+    @Override
+    public boolean isEmpty(String drink) {
+        return !drinks.containsKey(drinkType) && !drinks.containsValue(drink);
+    }
+
+    @Override
+    public void notifyMissingDrink(String drink) {
+        System.out.println("Your " + drink + " is not found ! :)");
     }
 }
