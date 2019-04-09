@@ -2,6 +2,7 @@ package com.lramss;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Commande {
@@ -41,6 +42,8 @@ public class Commande {
         }
     };
 
+    public Commande(){}
+
     public Commande(String drinkType, double money){
 
         this.drinkType = drinkType;
@@ -49,7 +52,7 @@ public class Commande {
 
     public Commande(String drinkType, int nbSugar, double money){
         this.drinkType = drinkType;
-        this.nbSugar = nbSugar;
+        this.nbSugar = (nbSugar > 0) ? nbSugar : 0;
         this.stick = (nbSugar > 0) ? 1 : 0;
         this.money = money;
     }
@@ -87,14 +90,51 @@ public class Commande {
         return this.money - getDrinkPrice();
     }
 
+    public boolean isValideCommande(){
+        boolean bool = true;
+            if (this.getDrinkLibelle().equals(UNKNOWN_DRINK) || this.getDrinkPrice() > this.money)
+                bool = false;
+        return bool;
+    }
+
     String sendCommandeToDrinkMaker() {
         DecimalFormat df = new DecimalFormat();
         double enoughMoney = checkMoney();
         String msgMoney;
         if (enoughMoney < 0)
-            msgMoney = df.format(getDrinkPrice() - this.money) + "€ is missing.";
+            msgMoney = df.format(this.getDrinkPrice() - this.money) + "€ is missing.";
         else
             msgMoney = enoughMoney + "€ on extra.";
         return drinkType + ":" + nbSugar + ":" + stick + ": " + msgMoney;
+    }
+
+    @Override
+    public String toString() {
+        return "Commande {" +
+                "Drink = '" + this.getDrinkLibelle() + '\'' +
+                ", Amount of sugar = " + nbSugar +
+                ", Price of drink = " + this.getDrinkPrice() +
+                "€}";
+    }
+
+    public double getTotalCommandeSold(List<Commande> list){
+        double total = 0.0;
+        for (Commande cmd : list) {
+            if(cmd.isValideCommande())
+                total += cmd.getDrinkPrice();
+        }
+        return total;
+    }
+
+    public void printAllValideCommande(List<Commande> list){
+        for (Commande cmd : list) {
+            if(cmd.isValideCommande())
+                System.out.println(cmd.toString());
+        }
+    }
+
+    public void printAllCommande(List<Commande> list){
+        for (Commande cmd : list)
+            System.out.println(cmd.toString() + ", Valid order => " + cmd.isValideCommande());
     }
 }
