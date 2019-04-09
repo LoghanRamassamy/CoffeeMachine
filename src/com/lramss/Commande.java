@@ -9,22 +9,35 @@ public class Commande {
     private int nbSugar;
     private int stick;
     private final String UNKNOWN_DRINK = "unknown drink";
-    private final String OK = "OK";
     private double money;
-    private Map<String, String> drinks = new HashMap<String, String>()
+    private Map<String, String> drinks = new HashMap<>()
     {
         {
             put("T", "Tea");
+            put("Th", "Hot Tea");
+
             put("C", "Coffee");
+            put("Ch", "Hot Coffee");
+
             put("H", "Chocolate");
+            put("Hh", "Hot Chocolate");
+
+            put("O", "Orange");
         }
     };
-    private Map<String, Double> drinksPrice = new HashMap<String, Double>()
+    private Map<String, Double> drinksPrice = new HashMap<>()
     {
         {
             put("T", 0.4);
+            put("Th", 0.4);
+
             put("C", 0.6);
+            put("Ch", 0.6);
+
             put("H", 0.5);
+            put("Hh", 0.5);
+
+            put("O", 0.6);
         }
     };
 
@@ -53,11 +66,11 @@ public class Commande {
         return money;
     }
 
-    public String getDrinkLibelle(){
+    String getDrinkLibelle(){
         return drinks.getOrDefault(drinkType, UNKNOWN_DRINK);
     }
 
-    public Double getDrinkPrice(){
+    Double getDrinkPrice(){
         return drinksPrice.getOrDefault(drinkType, 0.0);
     }
 
@@ -70,11 +83,11 @@ public class Commande {
         return msg;
     }
 
-    public double checkMoney(){
+    double checkMoney(){
         return this.money - getDrinkPrice();
     }
 
-    public String sendCommandeToDrinkMaker() {
+    String sendCommandeToDrinkMaker() {
         DecimalFormat df = new DecimalFormat();
         double enoughMoney = checkMoney();
         String msgMoney;
