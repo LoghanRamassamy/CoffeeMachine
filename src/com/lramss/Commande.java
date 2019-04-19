@@ -3,60 +3,29 @@ package com.lramss;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Commande implements EmailNotifier, BeverageQuantityChecker{
-    private String drinkType;
+    private Drink drink;
     private int nbSugar;
     private int stick;
-    private final String UNKNOWN_DRINK = "unknown drink";
     private double money;
-    private Map<String, String> drinks = new HashMap<>()
-    {
-        {
-            put("T", "Tea");
-            put("Th", "Hot Tea");
-
-            put("C", "Coffee");
-            put("Ch", "Hot Coffee");
-
-            put("H", "Chocolate");
-            put("Hh", "Hot Chocolate");
-
-            put("O", "Orange");
-        }
-    };
-    private Map<String, Double> drinksPrice = new HashMap<>()
-    {
-        {
-            put("T", 0.4);
-            put("Th", 0.4);
-
-            put("C", 0.6);
-            put("Ch", 0.6);
-
-            put("H", 0.5);
-            put("Hh", 0.5);
-
-            put("O", 0.6);
-        }
-    };
+    private String drinkType;
 
     public Commande(){}
 
-    public Commande(String drinkType, double money){
-
-        this.drinkType = drinkType;
+    public Commande(Drink drink, double money){
+        this.drinkType = drink.getCode();
         this.money = money;
+        this.drink = drink;
     }
 
-    public Commande(String drinkType, int nbSugar, double money){
-        this.drinkType = drinkType;
+    public Commande(Drink drink, int nbSugar, double money){
+        this.drinkType = drink.getCode();
         this.nbSugar = (nbSugar > 0) ? nbSugar : 0;
         this.stick = (nbSugar > 0) ? 1 : 0;
         this.money = money;
+        this.drink = drink;
     }
 
     public String getDrinkType() {
@@ -71,29 +40,16 @@ public class Commande implements EmailNotifier, BeverageQuantityChecker{
         return money;
     }
 
-    String getDrinkLibelle(){
-        return drinks.getOrDefault(drinkType, UNKNOWN_DRINK);
-    }
-
-    Double getDrinkPrice(){
-        return drinksPrice.getOrDefault(drinkType, 0.0);
-    }
-
-    public String toStringForCustomer() {
-        String msg;
-        if (drinks.containsKey(drinkType))
-            msg = "Drink maker makes 1 " + getDrinkLibelle() + " with " + nbSugar + " sugar and " + stick + " stick.";
-        else
-            msg = "Drink maker will don't makes your drink. (" + UNKNOWN_DRINK + ")";
-        return msg;
-    }
-
     double checkMoney(){
-        return this.money - getDrinkPrice();
+        return this.money - drink.getPrice();
     }
+
+    String getDrinkLibelle() { return drink.getLibelle(); }
+
+    Double getDrinkPrice() { return drink.getPrice(); }
 
     public boolean isValideCommande(){
-        return drinks.containsKey(drinkType) && getDrinkPrice() <= money;
+        return drink.getPrice() <= money;
     }
 
     String sendCommandeToDrinkMaker() {
@@ -101,7 +57,7 @@ public class Commande implements EmailNotifier, BeverageQuantityChecker{
         double enoughMoney = checkMoney();
         String msgMoney;
         if (enoughMoney < 0)
-            msgMoney = df.format(getDrinkPrice() - money) + "€ is missing.";
+            msgMoney = df.format(drink.getPrice() - money) + "€ is missing.";
         else
             msgMoney = enoughMoney + "€ on extra.";
         return drinkType + ":" + nbSugar + ":" + stick + ": " + msgMoney;
@@ -110,9 +66,9 @@ public class Commande implements EmailNotifier, BeverageQuantityChecker{
     @Override
     public String toString() {
         return "Commande {" +
-                "Drink = '" + getDrinkLibelle() + '\'' +
+                "Drink = '" + drink.getLibelle() + '\'' +
                 ", Amount of sugar = " + nbSugar +
-                ", Price of drink = " + getDrinkPrice() +
+                ", Price of drink = " + drink.getPrice() +
                 "€}";
     }
 
@@ -120,7 +76,7 @@ public class Commande implements EmailNotifier, BeverageQuantityChecker{
         double total = 0.0;
         for (Commande cmd : list) {
             if(cmd.isValideCommande())
-                total += cmd.getDrinkPrice();
+                total += cmd.drink.getPrice();
         }
         return total;
     }
@@ -138,8 +94,8 @@ public class Commande implements EmailNotifier, BeverageQuantityChecker{
     }
 
     @Override
-    public boolean isEmpty(String drink) {
-        return !drinks.containsKey(drinkType) && !drinks.containsValue(drink);
+    public boolean isEmpty(String drinkWanted) {
+        return !drink.getCode().equals(drinkWanted) && !drink.getLibelle().equals(drinkWanted);
     }
 
     @Override
