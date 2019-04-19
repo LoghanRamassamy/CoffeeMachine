@@ -10,18 +10,15 @@ public class Commande implements EmailNotifier, BeverageQuantityChecker{
     private int nbSugar;
     private int stick;
     private double money;
-    private String drinkType;
 
     public Commande(){}
 
     public Commande(Drink drink, double money){
-        this.drinkType = drink.getCode();
         this.money = money;
         this.drink = drink;
     }
 
     public Commande(Drink drink, int nbSugar, double money){
-        this.drinkType = drink.getCode();
         this.nbSugar = (nbSugar > 0) ? nbSugar : 0;
         this.stick = (nbSugar > 0) ? 1 : 0;
         this.money = money;
@@ -29,7 +26,7 @@ public class Commande implements EmailNotifier, BeverageQuantityChecker{
     }
 
     public String getDrinkType() {
-        return drinkType;
+        return drink.getCode();
     }
 
     public int getNbSugar() {
@@ -60,7 +57,7 @@ public class Commande implements EmailNotifier, BeverageQuantityChecker{
             msgMoney = df.format(drink.getPrice() - money) + "€ is missing.";
         else
             msgMoney = enoughMoney + "€ on extra.";
-        return drinkType + ":" + nbSugar + ":" + stick + ": " + msgMoney;
+        return drink.getCode() + ":" + nbSugar + ":" + stick + ": " + msgMoney;
     }
 
     @Override
