@@ -27,14 +27,6 @@ public class Command {
         return this.drink;
     }
 
-    public double getMoney() {
-        return this.money;
-    }
-
-    public int getNbSugar() {
-        return this.nbSugar;
-    }
-
     double checkMoney(){
         return this.money - this.drink.price;
     }
