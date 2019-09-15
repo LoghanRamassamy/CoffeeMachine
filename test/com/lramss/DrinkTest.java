@@ -6,27 +6,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DrinkTest {
 
+
     @Test
-    void getCode() {
+    void isEmptyDrink() {
+        assertTrue(new Command(Drink.TEA,2).getDrink().isEmpty("HOT Coffee !"));
     }
 
     @Test
-    void getname() {
+    void isNotEmptyDrink() {
+        assertFalse(new Command(Drink.ORANGE,2).getDrink().isEmpty("Orange"));
     }
 
-    @Test
-    void getPrice() {
-    }
-
-    @Test
-    void testToString() {
-    }
-
-    @Test
-    void isEmpty() {
-    }
-
-    @Test
-    void notifyMissingDrink() {
-    }
 }
