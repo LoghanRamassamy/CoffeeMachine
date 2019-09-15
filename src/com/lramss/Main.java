@@ -6,14 +6,15 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        List<Commande> list = new ArrayList<>();
-        list.add(new Commande(Drink.CHOCOLATE,0.6));
-        list.add(new Commande(Drink.TEA,2,1.0));
-        list.add(new Commande(Drink.HOT_CHOCOLATE,2,0.5));
-        list.add(new Commande(Drink.HOT_COFFEE,5,2.0));
+        List<Command> commandList = new ArrayList<>();
 
-        new Commande().printAllCommande(list);
+        commandList.add(new Command<>(Drink.CHOCOLATE, 0.6));
+        commandList.add(new Command<>(Drink.TEA, 2, 1));
+        commandList.add(new Command<>(Drink.HOT_CHOCOLATE, 0.5, 2));
+        commandList.add(new Command<>(Drink.HOT_COFFEE, 2.0, 5));
 
-        new Commande().notifyMissingDrink("Dingo");
+        new Command().printAllCommand(commandList);
+
+        Drink.CHOCOLATE.notifyMissingDrink("Dingo");
     }
 }
