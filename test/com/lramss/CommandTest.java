@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CommandTest {
 
-
     @Test
     void drinkTypeIsTea() {
         assertEquals(new Command(Drink.TEA,0.20).getDrink().name, "Tea");

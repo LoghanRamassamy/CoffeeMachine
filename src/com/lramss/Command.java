@@ -1,6 +1,5 @@
 package com.lramss;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class Command {
@@ -8,12 +7,14 @@ public class Command {
     private int nbSugar;
     private int stick;
     private double money;
+    private Status status;
 
     Command() {}
 
     Command(Drink drink, double money) {
         this.drink = drink;
         this.money = money;
+        this.status = isValidCommand() ? Status.VALID : Status.NO_VALID;
     }
 
     Command(Drink drink, double money, int nbSugar){
@@ -21,6 +22,7 @@ public class Command {
         this.money = money;
         this.nbSugar = Math.max(nbSugar, 0);
         this.stick = (nbSugar > 0) ? 1 : 0;
+        this.status = isValidCommand() ? Status.VALID : Status.NO_VALID;
     }
 
     Drink getDrink() {
@@ -31,18 +33,17 @@ public class Command {
         return this.money - this.drink.price;
     }
 
-    boolean isValideCommand(){
-        return this.drink.price <= this.money;
+    boolean isValidCommand(){
+        return checkMoney() >= 0;
     }
 
     String sendCommandToDrinkMaker() {
-        DecimalFormat df = new DecimalFormat();
         double enoughMoney = this.checkMoney();
         String msgMoney;
-        if (enoughMoney < 0)
-            msgMoney = df.format(this.drink.price - this.money) + "€ is missing.";
-        else
+        if (isValidCommand())
             msgMoney = enoughMoney + "€ on extra.";
+        else
+            msgMoney = Math.abs(enoughMoney) + "€ is missing.";
         return this.drink.code + ":" + this.nbSugar + ":" + this.stick + ":" + msgMoney;
     }
 
@@ -54,22 +55,33 @@ public class Command {
     double getTotalCommandSold(List<Command> list){
         double total = 0.0;
         for (Command cmd : list) {
-            if(cmd.isValideCommand())
+            if(cmd.isValidCommand())
                 total += cmd.drink.price;
         }
         return total;
     }
 
-    void printAllValidCommand(List<Command> list){
-        for (Command cmd : list) {
-            if(cmd.isValideCommand())
-                System.out.println(cmd.toString());
+    void printCommand(Command cmd) {
+        System.out.println(cmd.toString());
+    }
+
+    void printCommand(Command cmd, Status status) {
+        if(status.equals(cmd.status)) {
+            printCommand(cmd);
         }
     }
 
-    void printAllCommand(List<Command> list){
-        for (Command cmd : list)
-            System.out.println(cmd.toString() + ", Valid order => " + cmd.isValideCommand());
+    void printCommand(List<Command> list){
+        for (Command cmd : list) {
+            printCommand(cmd);
+        }
     }
+
+    void printCommand(List<Command> list, Status status){
+        for (Command cmd : list) {
+            printCommand(cmd, status);
+        }
+    }
+
 
 }

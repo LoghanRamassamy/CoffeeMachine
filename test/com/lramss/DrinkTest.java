@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DrinkTest {
 
-
     @Test
     void isEmptyDrink() {
         assertTrue(new Command(Drink.TEA,2).getDrink().isEmpty("HOT Coffee !"));
