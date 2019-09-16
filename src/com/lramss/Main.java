@@ -6,22 +6,23 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        List<Command> commandList = new ArrayList<>();
+        List<Command> list = new ArrayList<>();
+        list.add(new Command(Drink.CHOCOLATE, 0.6,0));
+        list.add(new Command(Drink.TEA, 2, 1));
+        list.add(new Command(Drink.HOT_CHOCOLATE, 0.5, 2));
+        list.add(new Command(Drink.HOT_COFFEE, 2.0, 5));
+        list.add(new Command(Drink.ORANGE, 0.4,0));
 
-        commandList.add(new Command(Drink.CHOCOLATE, 0.6));
-        commandList.add(new Command(Drink.TEA, 2, 1));
-        commandList.add(new Command(Drink.HOT_CHOCOLATE, 0.5, 2));
-        commandList.add(new Command(Drink.HOT_COFFEE, 2.0, 5));
-        commandList.add(new Command(Drink.ORANGE, 0.4));
+        CommandListEngine commandList = new CommandListEngine(list);
 
         System.out.println("=== VALID ===");
-        new Command().printCommand(commandList, Status.VALID);
+        commandList.printCommand(Status.VALID);
 
         System.out.println("=== NO VALID ===");
-        new Command().printCommand(commandList, Status.NO_VALID);
+        commandList.printCommand(Status.NO_VALID);
 
         System.out.println("=== ALL ===");
-        new Command().printCommand(commandList);
+        commandList.printCommand();
 
         Command command = new Command(Drink.HOT_COFFEE, 2.0, 5);
         command.getDrink().notifyMissingDrink("Dingo");

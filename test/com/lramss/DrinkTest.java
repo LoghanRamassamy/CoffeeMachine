@@ -8,12 +8,12 @@ class DrinkTest {
 
     @Test
     void isEmptyDrink() {
-        assertTrue(new Command(Drink.TEA,2).getDrink().isEmpty("HOT Coffee !"));
+        assertTrue(new Command(Drink.TEA,2,0).getDrink().isEmpty("HOT Coffee !"));
     }
 
     @Test
     void isNotEmptyDrink() {
-        assertFalse(new Command(Drink.ORANGE,2).getDrink().isEmpty("Orange"));
+        assertFalse(new Command(Drink.ORANGE,2,0).getDrink().isEmpty("Orange"));
     }
 
 }
